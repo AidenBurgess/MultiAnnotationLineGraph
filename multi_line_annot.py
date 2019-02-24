@@ -12,8 +12,7 @@ def update_annot(ind, line, annot, ydata):
     annot.get_bbox_patch().set_alpha(0.4)
 
 
-def hover(event, line_info):
-    line, annot, ydata = line_info
+def hover(event, line, annot, ydata):
     vis = annot.get_visible()
     if event.inaxes == ax:
         # Draw annotations if cursor in right position
@@ -38,7 +37,7 @@ def plot_line(x, y):
     annot.set_visible(False)
     line_info = [line, annot, y]
     fig.canvas.mpl_connect("motion_notify_event",
-                           lambda event: hover(event, line_info))
+                           lambda event: hover(event, line, annot, y))
 
 
 # Your data values to plot
