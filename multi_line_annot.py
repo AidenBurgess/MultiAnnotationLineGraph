@@ -7,6 +7,7 @@ def update_annot(ind, line, annot, ydata):
     # Get x and y values, then format them to be displayed
     x_values = " ".join(list(map(str, ind["ind"])))
     y_values = " ".join(str(ydata[n]) for n in ind["ind"])
+    # Format of label can be changed here
     text = "{}, {}".format(x_values, y_values)
     annot.set_text(text)
     annot.get_bbox_patch().set_alpha(0.4)
@@ -35,7 +36,6 @@ def plot_line(x, y):
                         bbox=dict(boxstyle="round", fc="w"),
                         arrowprops=dict(arrowstyle="->"))
     annot.set_visible(False)
-    line_info = [line, annot, y]
     fig.canvas.mpl_connect("motion_notify_event",
                            lambda event: hover(event, line, annot, y))
 
