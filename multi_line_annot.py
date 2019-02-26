@@ -1,35 +1,38 @@
 import matplotlib.pyplot as plt
 
 
-class LineGraph():
+class LineGraph:
 
     def __init__(self):
+        # Disable toolbar - optional
+        plt.rcParams['toolbar'] = 'None'
         self.fig, self.ax = plt.subplots()
-        # Label the graph
         # X and Y labels
-        plt.xlabel('x - axis')
-        plt.ylabel('y - axis')
-        # Titles
-        plt.suptitle('Title of Graph', fontsize=16)
+        plt.xlabel('x-axis')
+        plt.ylabel('y-axis')
+        # Title
+        plt.suptitle('Title', fontsize=16)
 
-    def update_annot(self, ind, line, annot, ydata):
+    def update_annot(self, line, annot):
+        # Get x and y values
         x, y = line.get_data()
-        annot.xy = (x[ind["ind"][0]], y[ind["ind"][0]])
-        # Get x and y values, then format them to be displayed
-        x_values = " ".join(list(map(str, ind["ind"])))
-        y_values = " ".join(str(ydata[n]) for n in ind["ind"])
-        # Format of label can be changed here
-        text = "{}, {}".format(x_values, y_values)
+        x = x[self.ind["ind"][0]]
+        y = y[self.ind["ind"][0]]
+        # Change location of annotation
+        annot.xy = (x, y)
+        # Text to display on label
+        text = f"{x}, {int(y):,}"
         annot.set_text(text)
-        annot.get_bbox_patch().set_alpha(0.4)
+        # Set transparency
+        annot.get_bbox_patch().set_alpha(0.8)
 
-    def hover(self, event, line, annot, ydata):
+    def hover(self, event, line, annot):
         vis = annot.get_visible()
         if event.inaxes == self.ax:
-            # Draw annotations if cursor in right position
-            cont, ind = line.contains(event)
+            cont, self.ind = line.contains(event)
+            # Set annotation if cursor contacts line
             if cont:
-                self.update_annot(ind, line, annot, ydata)
+                self.update_annot(line, annot)
                 annot.set_visible(True)
                 self.fig.canvas.draw_idle()
             else:
@@ -47,19 +50,20 @@ class LineGraph():
                                  arrowprops=dict(arrowstyle="->"))
         annot.set_visible(False)
         self.fig.canvas.mpl_connect("motion_notify_event",
-                                    lambda event: self.hover(event, line, annot, y))
+                                    lambda event: self.hover(event, line, annot))
 
     def show_graph(self):
         plt.show()
 
 
-# Your data values to plot
-x1 = range(21)
-y1 = range(21)
-x2 = range(21)
-y2 = range(0, 42, 2)
-# Create new graph
-new_graph = LineGraph()
-new_graph.plot_line(x1, y1)
-new_graph.plot_line(x2, y2)
-new_graph.show_graph()
+if __name__ == '__main__':
+    # Your data values to plot
+    x1 = range(21)
+    y1 = range(0, 21)
+    x2 = range(21)
+    y2 = range(0, 42, 2)
+    # Plot line graphs
+    new = LineGraph()
+    new.plot_line(x1, y1)
+    new.plot_line(x2, y2)
+    new.show_graph()
